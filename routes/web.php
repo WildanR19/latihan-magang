@@ -1,15 +1,16 @@
 <?php
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
-Route::get('/', function () {
-       return view('welcome', ['name' => 'Samantha']);
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/post/{id}', [HomeController::class, 'show'])->name('post.show');
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Route::resource('users', UserController::class);
-// Route::get('users', [UserController::class, 'index']);
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+       Route::resource('users', UserController::class)->except(['create', 'show']);
+       Route::resource('posts', PostController::class)->except(['create', 'show']);
+});

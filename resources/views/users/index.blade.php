@@ -4,6 +4,16 @@
     <div class="container">
         <h2>User Management</h2>
 
+        @if ($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 p-4 rounded mb-4">
+                <strong>Terjadi kesalahan:</strong>
+                <ul class="mt-2 list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <!-- User Create/Edit Form -->
         <div class="card mb-4">
             <div class="card-header">Add / Edit User</div>
@@ -74,6 +84,7 @@
                         @endforelse
                     </tbody>
                 </table>
+                {{ $data->links() }}
             </div>
         </div>
     </div>
