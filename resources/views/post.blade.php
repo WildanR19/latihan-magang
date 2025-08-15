@@ -24,26 +24,28 @@
                 <!-- Comment Section -->
                 <div class="mt-5">
                     <h4>Komentar</h4>
-                    <div class="mb-3">
-                        <textarea class="form-control" rows="3" placeholder="Tulis komentar..."></textarea>
-                    </div>
-                    <button class="btn btn-primary">Kirim</button>
+                    <form method="POST" action="{{ route('comments.store', $post->id) }}">
+                        @csrf
+                        <div class="mb-3">
+                            <textarea class="form-control" name="comment" rows="3"
+                                placeholder="Tulis komentar..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Kirim</button>
+                    </form>
 
                     <div class="mt-4">
-                        <div class="d-flex mb-3">
-                            <img src="https://via.placeholder.com/50" class="rounded-circle me-3" alt="User">
-                            <div>
-                                <h6 class="mb-0">User 1 <small class="text-muted">• 2 jam lalu</small></h6>
-                                <p class="mb-0">Komentar pertama di post ini.</p>
+                        @forelse ($post->comments as $comment)
+                            <div class="d-flex mb-3">
+                                <img src="https://via.placeholder.com/50" class="rounded-circle me-3" alt="User">
+                                <div>
+                                    <h6 class="mb-0">{{ $comment->user?->name }} <small class="text-muted">•
+                                            {{ $comment->created_at->diffForHumans() }}</small></h6>
+                                    <p class="mb-0">{{ $comment->comment }}.</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="d-flex">
-                            <img src="https://via.placeholder.com/50" class="rounded-circle me-3" alt="User">
-                            <div>
-                                <h6 class="mb-0">User 2 <small class="text-muted">• 5 jam lalu</small></h6>
-                                <p class="mb-0">Komentar kedua di post ini.</p>
-                            </div>
-                        </div>
+                        @empty
+                            <p class="text-muted">Belum ada komentar.</p>
+                        @endforelse
                     </div>
                 </div>
 
