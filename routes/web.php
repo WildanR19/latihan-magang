@@ -4,6 +4,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RoleController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index']);
@@ -20,4 +22,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
        });
 
        Route::post('comments/{postid}', [HomeController::class, 'storeComment'])->name('comments.store');
+
+       Route::resource('permissions', PermissionController::class)->except(['create', 'show']);
+       Route::resource('roles', RoleController::class)->except(['create', 'show']);
 });

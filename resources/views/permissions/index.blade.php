@@ -8,7 +8,7 @@
 @endsection
 @section('content')
     <div class="container">
-        <h2>User Management</h2>
+        <h2>Permissions Management</h2>
 
         @if ($errors->any())
             <div class="bg-red-100 border border-red-400 text-red-700 p-4 rounded mb-4">
@@ -22,70 +22,49 @@
         @endif
         <!-- User Create/Edit Form -->
         <div class="card mb-4">
-            <div class="card-header">Add / Edit User</div>
+            <div class="card-header">Add / Edit Permission</div>
             <div class="card-body">
-                <form action="{{ isset($user) ? route('users.update', $user->id) : route('users.store') }}" method="POST">
+                <form
+                    action="{{ isset($permission) ? route('permissions.update', $permission->id) : route('permissions.store') }}"
+                    method="POST">
                     @csrf
-                    @if(isset($user))
+                    @if(isset($permission))
                         @method('PUT')
                     @endif
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
-                        <input type="text" name="name" class="form-control" value="{{ $user->name ?? old('name') }}"
+                        <input type="text" name="name" class="form-control" value="{{ $permission->name ?? old('name') }}"
                             required>
                     </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" value="{{ $user->email ?? old('email') }}"
-                            required>
-                    </div>
-                    @if(!isset($user))
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" required>
-                        </div>
-                    @endif
-                    <div class="mb-3">
-                        <label for="roles" class="form-label">Roles</label>
-
-                        <select class="js-example-basic-multiple form-control" name="roles[]" multiple="multiple">
-                            @foreach ($roles as $role)
-                                <option value="{{ $role->name }}">{{ $role->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">{{ isset($user) ? 'Update' : 'Create' }}</button>
-                    @if(isset($user))
-                        <a href="{{ route('users.index') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">{{ isset($permission) ? 'Update' : 'Create' }}</button>
+                    @if(isset($permission))
+                        <a href="{{ route('permissions.index') }}" class="btn btn-secondary">Cancel</a>
                     @endif
                 </form>
             </div>
         </div>
 
-        <!-- User Table -->
+        <!-- Permission Table -->
         <div class="card">
-            <div class="card-header">User List</div>
+            <div class="card-header">Permission List</div>
             <div class="card-body">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>Name</th>
-                            <th>Email</th>
-                            <th>Roles</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($data as $index => $user)
+                        @forelse($permissions as $index => $permission)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->email }}</td>
-                                <td>{{ $user->roles->pluck('name')->implode(', ') }}</td>
+                                <td>{{ $permission->name }}</td>
                                 <td>
-                                    <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST"
+                                    <a href="{{ route('permissions.edit', $permission->id) }}"
+                                        class="btn btn-sm btn-warning">Edit</a>
+                                    <form action="{{ route('permissions.destroy', $permission->id) }}" method="POST"
                                         style="display:inline;">
                                         @csrf
                                         @method('DELETE')
@@ -96,12 +75,12 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center">No users found.</td>
+                                <td colspan="4" class="text-center">No permissions found.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
-                {{ $data->links() }}
+                {{ $permissions->links() }}
             </div>
         </div>
     </div>

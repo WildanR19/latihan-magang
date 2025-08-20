@@ -6,6 +6,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -14,9 +15,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        $data = User::paginate(10);
+        $data = User::with('roles')->paginate(10);
+        $roles = Role::all();
 
-        return view('users.index', compact('data'));
+        return view('users.index', compact('data', 'roles'));
     }
 
     /**
@@ -33,11 +35,12 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         try {
-            User::create([
+            $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
             ]);
+            $user->assignRole($request->roles);
             return redirect()->back()->with('success', 'User created successfully.');
 
         } catch (\Exception $e) {
@@ -74,6 +77,8 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->save();
+
+        $user->syncRoles($request->roles);
 
         return redirect()->route('users.index');
     }
