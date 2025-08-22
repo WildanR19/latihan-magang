@@ -16,6 +16,7 @@ Auth::routes();
 Route::middleware(['auth'])->prefix('admin')->group(function () {
        Route::middleware('role:Super-Admin')->group(function () {
               Route::resource('users', UserController::class)->except(['create', 'show']);
+              Route::get('users/export/{type}', [UserController::class, 'export'])->name('users.export');
        });
        Route::group(['middleware' => ['role:Super-Admin|writer']], function () {
               Route::resource('posts', PostController::class)->except(['create', 'show']);

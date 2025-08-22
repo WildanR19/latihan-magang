@@ -7,6 +7,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -19,14 +22,6 @@ class UserController extends Controller
         $roles = Role::all();
 
         return view('users.index', compact('data', 'roles'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -50,22 +45,15 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
     {
         $user = User::findOrFail($id);
-        $data = User::all();
+        $data = User::paginate(10);
+        $roles = Role::all();
 
-        return view('users.index', compact('user', 'data'));
+        return view('users.index', compact('user', 'data', 'roles'));
     }
 
     /**
@@ -90,6 +78,20 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $user->delete();
+
+        return redirect()->back();
+    }
+
+    public function export($type)
+    {
+        
+        if ($type === 'pdf') {
+            $data = User::all()->toArray();
+            $pdf = Pdf::loadView('users.export', compact('data'));
+            return $pdf->download('users.pdf');
+        } elseif ($type === 'excel') {
+            return Excel::download(new UsersExport, 'users.xlsx');
+        }
 
         return redirect()->back();
     }

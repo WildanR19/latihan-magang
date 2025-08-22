@@ -50,11 +50,13 @@
 
                         <select class="js-example-basic-multiple form-control" name="roles[]" multiple="multiple">
                             @foreach ($roles as $role)
-                                <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                <option value="{{ $role->name }}" {{ (isset($user) && $user->hasRole($role->name)) ? 'selected' : '' }}>{{ $role->name }}</option>
                             @endforeach
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">{{ isset($user) ? 'Update' : 'Create' }}</button>
+                    <a href="{{ route('users.export', 'pdf') }}" type="button" class="btn btn-secondary">Export PDF</a>
+                    <a href="{{ route('users.export', 'excel') }}" type="button" class="btn btn-secondary">Export Excel</a>
                     @if(isset($user))
                         <a href="{{ route('users.index') }}" class="btn btn-secondary">Cancel</a>
                     @endif
